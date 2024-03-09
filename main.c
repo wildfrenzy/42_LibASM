@@ -12,6 +12,7 @@ extern char *ft_strcpy(char *dst, const char *src);
 extern int ft_strcmp(const char *s1, const char *s2);
 extern ssize_t ft_write(unsigned int fd, const char *buf, size_t nbyte);
 extern ssize_t ft_read(unsigned int fd, char *buf, size_t count);
+extern char *ft_strdup(const char *s1);
 
 void test_strlen(void){
 	//assert(ft_strlen(NULL) == 0); // original doesn't like null either :)
@@ -137,12 +138,23 @@ void test_read(void){
 	puts("ft_read: OK");
 }
 
+void test_strdup(void){
+	char *ft;
+	char dup[50] = "strdup test";
+
+	ft = ft_strdup(dup);
+	assert(strcmp(dup, ft) == 0);
+	puts("ft_strdup: OK");
+	free(ft);
+}
+
 int main(void){
 	test_strlen();
 	test_strcpy();
 	test_strcmp();
 	test_write();
 	test_read();
+	test_strdup();
 
 	return 0;
 }
