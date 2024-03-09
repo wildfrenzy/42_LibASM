@@ -7,16 +7,14 @@
 #include <string.h>
 #include <errno.h>
 
-//nasm -felf64 ft_read.s && gcc -no-pie -Wall -Wextra -Werror ft_read.o main.c && ./a.out
-
 extern size_t ft_strlen(char const *str);
 extern char *ft_strcpy(char *dst, const char *src);
 extern int ft_strcmp(const char *s1, const char *s2);
-extern size_t ft_write(unsigned int fd, const char *buf, size_t nbyte);
-extern size_t ft_read(unsigned int fd, char *buf, size_t count);
+extern ssize_t ft_write(unsigned int fd, const char *buf, size_t nbyte);
+extern ssize_t ft_read(unsigned int fd, char *buf, size_t count);
 
 void test_strlen(void){
-	//assert(ft_strlen(NULL) == 0);
+	//assert(ft_strlen(NULL) == 0); // original doesn't like null either :)
 	assert(ft_strlen("") == strlen(""));
 	assert(ft_strlen("Hello") == strlen("Hello"));
 	assert(ft_strlen("Hello\n") == strlen("Hello\n"));
@@ -87,58 +85,64 @@ void test_strcmp(void){
 void test_write(void){
 	{
 		assert(ft_write(-1, "FD test\n", 8) == -1);
-		printf("errno: %d\n", errno);
+		//printf("errno: %d\n", errno);
+		assert(errno == 9); //EBADF	Bad file descriptor
 	}
+	errno = 0;
+	{
+		assert(ft_write(1, 0, 1) == -1);
+		//write(1, 0, 1);
+		//printf("errno: %d\n", errno);
+		assert(errno == 14); //EFAULT Bad address
+	}
+	errno = 0;
+	{
+		assert(ft_write(1, "STDOUT test\n", 12) == 12);
+		assert(errno == 0);
+	}
+	puts("ft_write: OK");
+}
+
+void test_read(void){
+	{
+		char *buf;
+		buf = calloc(sizeof(char) * 100, 1);
+
+		char *buf2;
+		buf2 = calloc(sizeof(char) * 100, 1);
+
+		int fd = open("test.txt", O_RDONLY);
+		int fd2 = open("test2.txt", O_RDONLY);
+
+		assert(ft_read(fd, buf, 55) == read(fd2, buf2, 55));
+
+		free(buf);
+		free(buf2);
+
+		close(fd);
+		close(fd2);
+	}
+	{
+		int ft_errno = 0;
+
+		ft_read(-1, 0, 0);
+		ft_errno = errno;
+		errno = 0;
+		read(-1, 0, 0);
+
+		assert(ft_errno == errno);
+		errno = 0;
+	}
+
+	puts("ft_read: OK");
 }
 
 int main(void){
 	test_strlen();
 	test_strcpy();
 	test_strcmp();
+	test_write();
+	test_read();
 
-	ft_write(1, "Hallo\n", 6);
-	// printf("mine: %ld\n", ft_write(1, NULL, 2));
-	// perror("ft_write");
-
-	// printf("original: %ld\n", write(1, NULL, 2));
-	// perror("write");
-
-	// printf("mine: %ld\n", ft_write(-1, "hallo\n", 2));
-	// //perror("ft_write");
-
-	// printf("original: %ld\n", write(-1, "hallo\n", 2));
-	// //perror("write");
-
-	// printf("mine: %ld\n", ft_write(10, "hallo\n", 6));
-	// perror("ft_write");
-
-	// printf("original: %ld\n", write(10, "hallo\n", 6));
-	// perror("write");
-/*
-	char *buf;
-	buf = calloc(sizeof(char) * 10, 1);
-
-	int fd = open("test.txt", O_RDONLY);
-	printf("fd: %d\n", fd);
-	perror("open");
-	ft_read(fd, buf, 60);
-	perror("ft_read");
-	printf("mine: %s\n", buf);
-	free(buf);
-	close(fd);
-
-	write(1, "**********\n", 11);
-	char *buf2;
-	buf2 = calloc(sizeof(char) * 10, 1);
-
-	int fd2 = open("test2.txt", O_RDONLY);
-	printf("fd: %d\n", fd2);
-	perror("open");
-	read(fd2, buf2, 60);
-	perror("read");
-	printf("original: %s\n", buf2);
-	free(buf2);
-	close(fd2);
-*/
 	return 0;
 }
