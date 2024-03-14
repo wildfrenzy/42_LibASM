@@ -7,12 +7,20 @@
 #include <string.h>
 #include <errno.h>
 
+typedef struct s_list
+{
+	void *data;
+	struct s_list *next;
+} 				t_list;
+
 extern size_t ft_strlen(char const *str);
 extern char *ft_strcpy(char *dst, const char *src);
 extern int ft_strcmp(const char *s1, const char *s2);
 extern ssize_t ft_write(unsigned int fd, const char *buf, size_t nbyte);
 extern ssize_t ft_read(unsigned int fd, char *buf, size_t count);
 extern char *ft_strdup(const char *s1);
+extern size_t ft_list_size(t_list *lst);
+
 
 void test_strlen(void){
 	//assert(ft_strlen(NULL) == 0); // original doesn't like null either :)
@@ -148,6 +156,28 @@ void test_strdup(void){
 	free(ft);
 }
 
+void test_ft_list_size(void){
+	t_list a;
+	t_list b;
+	t_list c;
+	t_list d;
+	t_list e;
+
+	a.next = &b;
+	b.next = &c;
+	c.next = &d;
+	d.next = NULL;
+	e.next = &a;
+
+	assert(ft_list_size(&e) == 5);
+	assert(ft_list_size(&a) == 4);
+	assert(ft_list_size(&b) == 3);
+	assert(ft_list_size(&c) == 2);
+	assert(ft_list_size(&d) == 1);
+
+	puts("ft_list_size: OK");
+}
+
 int main(void){
 	test_strlen();
 	test_strcpy();
@@ -155,6 +185,7 @@ int main(void){
 	test_write();
 	test_read();
 	test_strdup();
+    test_ft_list_size();
 
 	return 0;
 }
