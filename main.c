@@ -19,7 +19,10 @@ extern int ft_strcmp(const char *s1, const char *s2);
 extern ssize_t ft_write(unsigned int fd, const char *buf, size_t nbyte);
 extern ssize_t ft_read(unsigned int fd, char *buf, size_t count);
 extern char *ft_strdup(const char *s1);
+//bonus part:
 extern size_t ft_list_size(t_list *lst);
+extern void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *));
+
 
 
 void test_strlen(void){
@@ -177,6 +180,45 @@ void test_ft_list_size(void){
 
 	puts("ft_list_size: OK");
 }
+
+void free_fct(void *data){
+	printf("free data: %s\n", (char *)data);
+	free(data);
+}
+
+t_list	*ft_lstnew(void *content)
+{
+	struct s_list	*new;
+
+	new = (t_list *)malloc(sizeof(t_list));
+	if (new == NULL)
+		return (0);
+	new->data = content;
+	new->next = NULL;
+	return (new);
+}
+
+void test_list_remove_if(void){
+	char *keep = strdup("Hello");
+	char *del = strdup("remove");
+
+	t_list *a = ft_lstnew(keep);
+	t_list *b = ft_lstnew(keep);
+	t_list *c = ft_lstnew(del);
+	t_list *d = ft_lstnew(keep);
+
+	a->next = b;
+	b->next = c;
+	c->next = d;
+
+	//(*cmp)(list_ptr->data, data_ref);
+	//(*free_fct)(list_ptr->data);
+
+	assert(ft_list_size(a) == 4);
+	ft_list_remove_if(&a, del, strcmp, free_fct);
+	assert(ft_list_size(a) == 3);
+}
+
 
 int main(void){
 	test_strlen();
