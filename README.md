@@ -17,15 +17,16 @@ The aim of this project is to get familiar with x86_64 assembly language, reprod
 
 ***Available functions:***
 
-| Name              | Prototype                                                       | Description            |
-| :---------------: | :-------------------------------------------------------------: | :--------------------: |
-| `ft_read`         | ssize_t ft_read(int fildes, void *buf, size_t nbyte);           | man `read(2)`          |
-| `ft_strcmp`       | int ft_strcmp(const char *s1, const char *s2);                  | man `strcmp(3)`        |
-| `ft_strcpy`       | char *ft_strcpy(char *dst, char const *src);                    | man `strcpy(3)`        |
-| `ft_strdup`       | char *ft_strdup(const char *s1);                                | man `strdup(3)`        |
-| `ft_strlen`       | size_t ft_strlen(char const *str);                              | man `strlen(3)`        |
-| `ft_write`        | ssize_t ft_write(int fildes, const void *buf, size_t nbyte);    | man `write(2)`         |
-
+|        Name         |                                                            Prototype                                                             |                                            Description                                             |
+|:-------------------:|:--------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
+|      `ft_read`      |                                    ssize_t ft_read(unsigned int fd, char *buf, size_t count);                                    |                                           man `read(2)`                                            |
+|     `ft_strcmp`     |                                          int ft_strcmp(const char *s1, const char *s2);                                          |                                          man `strcmp(3)`                                           |
+|     `ft_strcpy`     |                                           char *ft_strcpy(char *dst, char const *src);                                           |                                          man `strcpy(3)`                                           |
+|     `ft_strdup`     |                                                 char *ft_strdup(const char *s1);                                                 |                                          man `strdup(3)`                                           |
+|     `ft_strlen`     |                                                size_t ft_strlen(char const *str);                                                |                                          man `strlen(3)`                                           |
+|     `ft_write`      |                                ssize_t ft_write(unsigned int fd, const char *buf, size_t nbyte);                                 |                                           man `write(2)`                                           |
+|   `ft_list_size`    |                                                size_t ft_list_size(t_list *lst);                                                 |                            returns the number of elements in the list.                             |
+| `ft_list_remove_if` |  void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(const char *, const char *), void (*free_fct)(void *));  | removes from the list, all elements whose data compared to data_ref using cmp, makes cmp return 0. |
 
 ## Usage
 
