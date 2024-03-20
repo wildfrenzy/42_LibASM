@@ -182,7 +182,8 @@ void test_ft_list_size(void){
 }
 
 void free_fct(void *data){
-	printf("free data: %s\n", (char *)data);
+	puts("Deleting...");
+	puts(data);
 	free(data);
 }
 
@@ -202,14 +203,13 @@ int iter = 0;
 int	a_strcmp(const char *s1, const char *s2){
 	iter++;
 	size_t	i = 0;
-	printf("iter:%d\ns1:%s\ns2:%s\n\n", iter, s1, s2);
+	//printf("iter:%d\ns1:%s\ns2:%s\n\n", iter, s1, s2);
 	while (s1[i])
 	{
 		if ((unsigned char)s1[i] != (unsigned char)s2[i])
 			break ;
 		i++;
 	}
-	fflush(stdout);
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
@@ -223,16 +223,23 @@ void test_list_remove_if(void){
 	b->next = c;
 	c->next = d;
 
+	t_list **p;
+	p = &a;
+
 	//(*cmp)(list_ptr->data, data_ref);
 	//(*free_fct)(list_ptr->data);
 
 	puts("[	TEST IN THE MIDDLE	]");
+
 	assert(ft_list_size(a) == 4);
-	ft_list_remove_if(&a, "third", a_strcmp, free_fct);
-	printf("lst_size:%zx\n", ft_list_size(a));
+
+	ft_list_remove_if(p, "third", a_strcmp, free_fct);
+
+	assert(b->next == d);
 	assert(ft_list_size(a) == 3);
 
 	puts("[	TEST IN THE HEAD	]");
+
 	iter = 0;
 	c = ft_lstnew(strdup("third"));
 	b->next = c;
@@ -240,9 +247,7 @@ void test_list_remove_if(void){
 
 	assert(ft_list_size(a) == 4);
 	ft_list_remove_if(&a, "first", a_strcmp, free_fct);
-
-	size_t len = ft_list_size(a);
-	printf("lst_size:%zx\n", len);
+	assert(a == b);
 	assert(ft_list_size(a) == 3);
 
 	puts("[	TEST IN THE TAIL	]");
@@ -254,9 +259,7 @@ void test_list_remove_if(void){
 
 	assert(ft_list_size(a) == 4);
 	ft_list_remove_if(&a, "fourth", a_strcmp, free_fct);
-
-	len = ft_list_size(a);
-	printf("lst_size:%zx\n", len);
+	assert(c->next == NULL);
 	assert(ft_list_size(a) == 3);
 
 	puts("ft_list_remove_if: OK");
