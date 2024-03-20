@@ -6,16 +6,15 @@
 ;rbx	will have deref of **list, so *list
 ;r13	tmp for previous node
 
-
 		global	ft_list_remove_if
 		extern	free
 		section	.text
 
 ft_list_remove_if:
-		push	rbx						;Preserved register: don't use it without saving it
+		push	rbx					;Preserved register: don't use it without saving it
 		cmp		rdi, 0
 		je		return
-		mov		rbx, qword[rdi] 		; loading the address t_list* into rbx
+		mov		rbx, qword[rdi] 	; loading the address t_list* into rbx
 		push	r13
 		mov		r13, rbx
 
@@ -23,17 +22,16 @@ loop:
 		cmp		rbx, 0
 		je		return
 
-		push	rdi	 			; saving all args
+		push	rdi	 				; saving all args
 		push	rsi
 		push	rbx
 		push	rcx
 		push	rdx
 
-		mov		rdi, qword[rbx]	; moving list->data to rdi
+		mov		rdi, qword[rbx]		; moving list->data to rdi
+		call	rdx					; trying to call cmp function
 
-		call	rdx				; trying to call cmp function
-
-		pop		rdx				; bringing back all args
+		pop		rdx					; bringing back all args
 		pop		rcx
 		pop		rbx
 		pop		rsi
@@ -51,64 +49,43 @@ return:
 		ret
 
 delete_data:
+		xor		r8, r8
+		cmp		[rdi], rbx			; check if current node is in head
+		setz	r8b					; saving cmp result in r8
+
 		push	rdi	 				; saving all args
 		push	rsi
-		push	rbx
 		push	rcx
 		push	rdx
+		push	r8
 
+	; ----------- free data
 		mov		rdi, qword[rbx]
+		push	rbx					; saving curr node
 		call	rcx					; trying to call free_fct(); data is already in rdi
-
-		pop		rdx
-		pop		rcx
+	; ----------- free node
 		pop		rbx
-		pop		rsi
-		pop		rdi
-
-		cmp		[rdi], rbx
-		je		head
-		jmp		connect_nodes
-head:
-		push	rdi	 				; saving all args
-		push	rsi
-		push	rcx
-		push	rdx
 
 		mov		rdi, rbx			; saving current node in rdi, prepared to free
 		mov		rbx, [rbx + 8]		; curr = curr->next
-
 		push	rbx
-
 		call	free				; trying to free node
-
+	; -----------
 		pop		rbx
+		pop		r8
 		pop		rdx
 		pop		rcx
 		pop		rsi
 		pop		rdi
 
+		cmp		r8b, 1
+		je		head
+		jmp		connect_nodes
+
+head:
 		mov		[rdi], rbx
 		jmp		loop
 
 connect_nodes:
-		push	rdi	 				; saving all args
-		push	rsi
-		push	rcx
-		push	rdx
-
-		mov		rdi, rbx			; saving current node in rdi, prepared to free
-		mov		rbx, [rbx + 8] 		; placing next node on the position of current
-
-		push	rbx
-
-		call	free 				; trying to free node
-
-		pop		rbx
-		pop		rdx
-		pop		rcx
-		pop		rsi
-		pop		rdi
-
 		mov		[r13 + 8], rbx		; prev->next = curr->next
 		jmp		loop
