@@ -58,7 +58,6 @@ delete_data:
 		push	rcx
 		push	rdx
 		push	r8
-
 	; ----------- free data
 		mov		rdi, qword[rbx]
 		push	rbx					; saving curr node
@@ -80,12 +79,9 @@ delete_data:
 
 		cmp		r8b, 1
 		je		head
-		jmp		connect_nodes
+		mov		[r13 + 8], rbx		; prev->next = curr->next
+		jmp		loop
 
 head:
 		mov		[rdi], rbx
-		jmp		loop
-
-connect_nodes:
-		mov		[r13 + 8], rbx		; prev->next = curr->next
 		jmp		loop
