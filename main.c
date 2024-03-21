@@ -23,6 +23,7 @@ extern char *ft_strdup(const char *s1);
 extern size_t ft_list_size(t_list *lst);
 extern void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(const char *, const char *), void (*free_fct)(void *));
 extern void ft_list_push_front(t_list **begin_list, void *data);
+extern void ft_list_sort(t_list **begin_list, int (*cmp)(const char *, const char *));
 
 
 void test_strlen(void){
@@ -297,6 +298,68 @@ void test_list_push_front(void){
 	free(b);
 }
 
+void print_list(t_list *a){
+	while (a) {
+		printf("%s	", a->data);
+		a = a->next;
+	}
+	printf("\n");
+}
+
+int is_sorted(t_list **begin_list){
+	t_list *head = *begin_list;
+	t_list *prev = head;
+
+	while (head) {
+		//printf("cmp:%d\n", strcmp(head->data, prev->data));
+		if (strcmp(head->data, prev->data) < 0) {
+			return 0;
+		}
+		prev = head;
+		head = head->next;
+	}
+	return 1;
+}
+
+void	ft_list_del(t_list *begin_list)
+{
+	t_list *tmp;
+	while (begin_list->next)
+	{
+		tmp = begin_list;
+		free(begin_list->data);
+		begin_list = begin_list->next;
+		free(tmp);
+	}
+	free(begin_list->data);
+	free(begin_list);
+}
+
+void test_list_sort(void){
+	t_list *a = ft_lstnew(strdup("ccc"));
+	t_list *b = ft_lstnew(strdup("bbb"));
+	t_list *c = ft_lstnew(strdup("aaa"));
+	t_list *d = ft_lstnew(strdup("eee"));
+	t_list *e = ft_lstnew(strdup("ddd"));
+
+	a->next = b;
+	b->next = c;
+	c->next = d;
+	d->next = e;
+
+	assert(is_sorted(&a) == 0);
+
+	printf("Before: ");
+	print_list(a);
+	ft_list_sort(&a, a_strcmp);
+	printf("After: ");
+	print_list(a);
+
+	assert(is_sorted(&a) == 1);
+	puts("ft_list_sort: OK");
+	ft_list_del(a);
+}
+
 int main(void){
 	test_strlen();
 	test_strcpy();
@@ -304,8 +367,9 @@ int main(void){
 	test_write();
 	test_read();
 	test_strdup();
-    test_ft_list_size();
+	test_ft_list_size();
 	test_list_push_front();
+	test_list_sort();
 
 	return 0;
 }
