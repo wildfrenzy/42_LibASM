@@ -22,7 +22,7 @@ extern char *ft_strdup(const char *s1);
 //bonus part:
 extern size_t ft_list_size(t_list *lst);
 extern void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(const char *, const char *), void (*free_fct)(void *));
-
+extern void ft_list_push_front(t_list **begin_list, void *data);
 
 
 void test_strlen(void){
@@ -274,6 +274,28 @@ void test_list_remove_if(void){
 	//free(d);
 }
 
+void test_list_push_front(void){
+	t_list *a = ft_lstnew(strdup("first"));
+	t_list *b = ft_lstnew(strdup("second"));
+
+	char *data = strdup("new first");
+
+	a->next = b;
+
+	assert(ft_list_size(a) == 3);
+	ft_list_push_front(&a, data);
+	assert(strcmp(a->data, "new first") == 0);
+	assert(strcmp(a->next->data, "first") == 0);
+	assert(ft_list_size(a) == 4);
+	puts("ft_list_push_front: OK");
+
+	free(a->data);
+	free(a->next->data);
+	free(a->next);
+	free(a);
+	free(b->data);
+	free(b);
+}
 
 int main(void){
 	test_strlen();
@@ -283,6 +305,7 @@ int main(void){
 	test_read();
 	test_strdup();
     test_ft_list_size();
+	test_list_push_front();
 
 	return 0;
 }
