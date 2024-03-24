@@ -18,7 +18,7 @@ ft_list_push_front:
 		push	rbx
 
 		mov		rdi, 16				; 8b - *data; 8b - list->next;
-		call	malloc
+		call	malloc wrt ..plt
 
 		pop		rbx
 		pop		rsi

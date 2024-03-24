@@ -68,7 +68,7 @@ delete_data:
 		mov		rdi, rbx			; saving current node in rdi, prepared to free
 		mov		rbx, [rbx + 8]		; curr = curr->next
 		push	rbx
-		call	free				; trying to free node
+		call	free wrt ..plt		; trying to free node
 	; -----------
 		pop		rbx
 		pop		r8

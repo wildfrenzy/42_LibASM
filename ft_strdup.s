@@ -15,7 +15,7 @@ ft_strdup:
 		inc			rax
 		push		rdi
 		mov			rdi, rax
-		call		malloc
+		call		malloc wrt ..plt
 		cmp			rax, 0
 		je			exit
 		mov			rdi, rax
